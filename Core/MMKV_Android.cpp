@@ -52,7 +52,8 @@ MMKV::MMKV(const string &mmapID, int size, MMKVMode mode, string *cryptKey, stri
     , m_fileLock(new FileLock(m_metaFile->getFd(), (mode & MMKV_ASHMEM)))
     , m_sharedProcessLock(new InterProcessLock(m_fileLock, SharedLockType))
     , m_exclusiveProcessLock(new InterProcessLock(m_fileLock, ExclusiveLockType))
-    , m_isInterProcess((mode & MMKV_MULTI_PROCESS) != 0 || (mode & CONTEXT_MODE_MULTI_PROCESS) != 0) {
+    , m_isInterProcess((mode & MMKV_MULTI_PROCESS) != 0 || (mode & CONTEXT_MODE_MULTI_PROCESS) != 0)
+    , m_autoCloseFd(!m_isInterProcess && !(mode & MMKV_ASHMEM)) {
     m_actualSize = 0;
     m_output = nullptr;
 
@@ -100,7 +101,8 @@ MMKV::MMKV(const string &mmapID, int ashmemFD, int ashmemMetaFD, string *cryptKe
     , m_fileLock(new FileLock(m_metaFile->getFd(), true))
     , m_sharedProcessLock(new InterProcessLock(m_fileLock, SharedLockType))
     , m_exclusiveProcessLock(new InterProcessLock(m_fileLock, ExclusiveLockType))
-    , m_isInterProcess(true) {
+    , m_isInterProcess(true)
+    , m_autoCloseFd(false) {
 
     m_actualSize = 0;
     m_output = nullptr;

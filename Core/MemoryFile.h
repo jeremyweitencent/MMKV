@@ -131,6 +131,8 @@ public:
 
     MMKVFileHandle_t getFd() { return m_diskFile.getFd(); }
 
+    void close() { m_diskFile.close(); }
+
     // the newly expanded file content will be zeroed
     bool truncate(size_t size);
 

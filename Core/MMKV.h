@@ -202,6 +202,9 @@ public:
     const std::string &mmapID() const;
 
     const bool m_isInterProcess;
+#ifdef MMKV_ANDROID
+    const bool m_autoCloseFd;
+#endif
 
 #ifndef MMKV_DISABLE_CRYPT
     std::string cryptKey() const;

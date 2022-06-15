@@ -57,6 +57,11 @@ constexpr uint32_t Fixed32Size = pbFixed32Size();
 MMKV_NAMESPACE_BEGIN
 
 void MMKV::loadFromFile() {
+#ifdef MMKV_ANDROID
+    if (m_autoCloseFd && !m_metaFile->isFileValid()) {
+        m_metaFile->reloadFromFile();
+    }
+#endif
     if (m_metaFile->isFileValid()) {
         m_metaInfo->read(m_metaFile->getMemory());
     }
@@ -131,6 +136,11 @@ void MMKV::loadFromFile() {
     }
 
     m_needLoadFromFile = false;
+
+    if (m_autoCloseFd) {
+        m_file->close();
+        m_metaFile->close();
+    }
 }
 
 // read from last m_position
